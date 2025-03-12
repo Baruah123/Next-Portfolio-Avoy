@@ -84,7 +84,7 @@ export default function Contact() {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
           <p className="text-xl text-foreground/80 max-w-2xl mx-auto">
-            Have a project in mind or want to discuss a potential collaboration? I'd love to hear from you.
+            Have a project in mind or want to discuss a potential collaboration? I&apos;d love to hear from you.
           </p>
         </motion.div>
 
@@ -99,7 +99,7 @@ export default function Contact() {
             <motion.div variants={itemVariants}>
               <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
               <p className="text-foreground/80 mb-8">
-                Feel free to reach out through any of the following channels. I'm always open to discussing new
+                Feel free to reach out through any of the following channels. I&apos;m always open to discussing new
                 projects, creative ideas, or opportunities to be part of your vision.
               </p>
             </motion.div>

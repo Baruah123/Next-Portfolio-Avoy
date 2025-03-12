@@ -115,7 +115,9 @@ export default function Projects() {
               whileHover={{ y: -10 }}
               onMouseEnter={() => setActiveProject(project.id)}
               onMouseLeave={() => setActiveProject(null)}
-              className="group relative bg-card rounded-xl overflow-hidden shadow-lg"
+              className={`group relative bg-card rounded-xl overflow-hidden shadow-lg transition-shadow duration-300 ${
+                activeProject === project.id ? 'ring-2 ring-primary shadow-xl' : ''
+              }`}
             >
               <div className="relative h-64 overflow-hidden">
                 <Image

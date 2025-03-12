@@ -104,10 +104,10 @@ export default function AboutMeModal({ isOpen, onClose }: AboutMeModalProps) {
                 <h4 className="font-semibold mb-2">My Journey</h4>
                 <p className="text-sm text-muted-foreground">
                   I started my journey in web development 5 years ago, driven by a curiosity to understand how digital
-                  experiences are created. Since then, I've worked on a variety of projects, from small business
-                  websites to large-scale web applications, always striving to push the boundaries of what's possible on
+                  experiences are created. Since then, I&apos;ve worked on a variety of projects, from small business
+                  websites to large-scale web applications, always striving to push the boundaries of what&apos;s possible on
                   the web. My goal is to continue growing as a developer and to create digital solutions that make a
-                  positive impact on people's lives.
+                  positive impact on people&apos;s lives.
                 </p>
               </div>
             </motion.div>

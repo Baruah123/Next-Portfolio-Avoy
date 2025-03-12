@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 
@@ -50,10 +50,10 @@ export default function Testimonials() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useRef(false)
 
-  const nextTestimonial = () => {
+  const nextTestimonial = useCallback(() => {
     setDirection(1)
     setCurrent((prev) => (prev + 1) % testimonials.length)
-  }
+  }, [])
 
   const prevTestimonial = () => {
     setDirection(-1)
@@ -68,16 +68,17 @@ export default function Testimonials() {
       { threshold: 0.5 },
     )
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current)
+    const currentContainer = containerRef.current
+    if (currentContainer) {
+      observer.observe(currentContainer)
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current)
+      if (currentContainer) {
+        observer.unobserve(currentContainer)
       }
     }
-  }, [containerRef])
+  }, [])
 
   useEffect(() => {
     if (timeoutRef.current) {
@@ -171,7 +172,7 @@ export default function Testimonials() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.4 }}
                   >
-                    "{testimonials[current].content}"
+                    &ldquo;{testimonials[current].content}&rdquo;
                   </motion.p>
                   <motion.div
                     initial={{ opacity: 0 }}
