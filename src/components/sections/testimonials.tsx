@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, Quote, Sparkles } from "lucide-react"
 import Image from "next/image"
@@ -51,10 +51,10 @@ export default function Testimonials() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useRef(false)
 
-  const nextTestimonial = () => {
+  const nextTestimonial = useCallback(() => {
     setDirection(1)
     setCurrent((prev) => (prev + 1) % testimonials.length)
-  }
+  }, [])
 
   const prevTestimonial = () => {
     setDirection(-1)
@@ -66,19 +66,20 @@ export default function Testimonials() {
       ([entry]) => {
         isInView.current = entry.isIntersecting
       },
-      { threshold: 0.5 },
+      { threshold: 0.5 }
     )
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current)
+    const currentContainer = containerRef.current
+    if (currentContainer) {
+      observer.observe(currentContainer)
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current)
+      if (currentContainer) {
+        observer.unobserve(currentContainer)
       }
     }
-  }, [containerRef])
+  }, [])
 
   useEffect(() => {
     if (timeoutRef.current) {
