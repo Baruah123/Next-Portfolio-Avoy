@@ -1,17 +1,23 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { Menu, X, Moon, Sun, ChevronDown, Code2, Briefcase, User2, Sparkles, Clock, Phone } from "lucide-react"
+import { Moon, Sun, Code2, Briefcase, User2, Clock, Phone, Home, Menu } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
+
+// Simple transition type
+type TransitionConfig = {
+  type: "tween" | "spring";
+  duration?: number;
+  ease?: string;
+  stiffness?: number;
+  damping?: number;
+}
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -42,227 +48,360 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const toggleMenu = () => setIsOpen(!isOpen)
-
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      transition: {
-        type: "tween",
-        duration: 0.2,
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-    open: {
-      opacity: 1,
-      transition: {
-        type: "tween",
-        duration: 0.2,
-        when: "beforeChildren",
-        staggerChildren: 0.1,
-        delayChildren: 0.1,
-      },
-    },
-  }
-
-  const menuItemVariants = {
-    closed: { opacity: 0, y: 20 },
-    open: { opacity: 1, y: 0 },
-  }
-
-  const navLinks = [
-    { href: "#home", label: "Home", icon: <User2 className="w-4 h-4" /> },
-    { href: "#about", label: "About", icon: <User2 className="w-4 h-4" /> },
-    { href: "#projects", label: "Projects", icon: <Briefcase className="w-4 h-4" /> },
-    { href: "#skills", label: "Skills", icon: <Code2 className="w-4 h-4" /> },
-    { href: "#timeline", label: "Timeline", icon: <Clock className="w-4 h-4" /> },
-    { href: "#contact", label: "Contact", icon: <Phone className="w-4 h-4" /> },
+  const navItems = [
+    { title: "Home", icon: <Home className="w-full h-full" />, href: "#home" },
+    { title: "About", icon: <User2 className="w-full h-full" />, href: "#about" },
+    { title: "Projects", icon: <Briefcase className="w-full h-full" />, href: "#projects" },
+    { title: "Skills", icon: <Code2 className="w-full h-full" />, href: "#skills" },
+    { title: "Timeline", icon: <Clock className="w-full h-full" />, href: "#timeline" },
+    { title: "Contact", icon: <Phone className="w-full h-full" />, href: "#contact" },
   ]
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const target = document.querySelector(href)
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" })
-    }
-    setIsOpen(false)
+  // Fast, simple transition for UI elements
+  const fastTransition: TransitionConfig = {
+    type: "tween",
+    duration: 0.2,
+    ease: "easeOut"
+  }
+  
+  // Quick spring for background movement
+  const quickSpring: TransitionConfig = {
+    type: "spring",
+    stiffness: 500,
+    damping: 30
   }
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 w-full z-50 transition-all duration-500",
-        scrolled 
-          ? "bg-background/70 backdrop-blur-xl border-b border-border/40 py-3 shadow-lg" 
-          : "bg-transparent py-5"
-      )}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }} 
-            animate={{ opacity: 1, x: 0 }} 
-            transition={{ duration: 0.5 }}
-            className="flex items-center gap-2"
-          >
+    <>
+      {/* Logo and Theme Toggle - Fixed at Top */}
+      <header
+        className={cn(
+          "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+          scrolled 
+            ? "bg-background/90 backdrop-blur-sm border-b border-border py-2 shadow-sm" 
+            : "bg-background/60 py-3"
+        )}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
             <Link 
               href="/" 
-              className="relative group"
+              className="text-2xl font-bold text-primary"
             >
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Avoy.dev
-              </span>
-              <span className="absolute -top-1 -right-3">
-                <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-              </span>
+              Avoy.dev
             </Link>
-          </motion.div>
 
-          <div className="flex items-center gap-6">
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-secondary/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/50">
-                {navLinks.map((link) => (
-                  <motion.div
-                    key={link.href}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ y: 0 }}
-                    className="relative"
-                  >
-                    <a
-                      href={link.href}
-                      onClick={(e) => handleNavClick(e, link.href)}
-                      className={cn(
-                        "px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 relative group hover:bg-secondary/50",
-                        activeSection === link.href.replace("#", "")
-                          ? "text-primary bg-secondary"
-                          : "text-foreground/70 hover:text-foreground"
-                      )}
-                    >
-                      {link.icon}
-                      {link.label}
-                      {activeSection === link.href.replace("#", "") && (
-                        <motion.div
-                          layoutId="activeSection"
-                          className="absolute inset-0 rounded-full bg-secondary ring-1 ring-border -z-10"
-                          initial={false}
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                    </a>
-                  </motion.div>
-                ))}
-              </div>
-              
-              <div className="flex items-center gap-3 ml-2">
-                {mounted && (
+            {/* Theme Toggle */}
+            {mounted && (
+              <div className="flex items-center gap-4">
+                <AnimatePresence mode="wait">
                   <motion.button
-                    whileHover={{ scale: 1.1, rotate: theme === "dark" ? 15 : -15 }}
-                    whileTap={{ scale: 0.95 }}
+                    key={theme}
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="p-2.5 rounded-full bg-secondary/30 hover:bg-secondary/50 text-foreground/70 hover:text-foreground backdrop-blur-sm border border-border/50 transition-all duration-300"
+                    className="p-2 rounded-md bg-secondary/20 hover:bg-secondary/30 transition-colors"
                     aria-label="Toggle theme"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={fastTransition}
                   >
                     {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
                   </motion.button>
-                )}
+                </AnimatePresence>
                 
                 <Button 
-                  size="sm" 
-                  variant="gradient"
-                  className="px-4 py-5 font-medium rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+                  size="sm"
+                  variant="default"
+                  className="hidden md:flex"
                   onClick={() => {
                     window.open('https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing', '_blank')
                   }}
                 >
                   Resume
-                  <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
               </div>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-3 md:hidden">
-              {mounted && (
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: theme === "dark" ? 15 : -15 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="p-2.5 rounded-full bg-secondary/30 hover:bg-secondary/50 text-foreground/70 hover:text-foreground backdrop-blur-sm border border-border/50 transition-all duration-300"
-                  aria-label="Toggle theme"
-                >
-                  {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                </motion.button>
-              )}
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={toggleMenu}
-                className="p-2.5 rounded-full bg-secondary/30 hover:bg-secondary/50 text-foreground/70 hover:text-foreground backdrop-blur-sm border border-border/50 transition-all duration-300"
-                aria-label="Toggle menu"
-              >
-                {isOpen ? <X size={18} /> : <Menu size={18} />}
-              </motion.button>
-            </div>
+            )}
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu */}
+      {/* Navbar components */}
+      <NavbarDesktop 
+        items={navItems} 
+        activeSection={activeSection}
+        fastTransition={fastTransition}
+        quickSpring={quickSpring}
+      />
+      <NavbarMobile 
+        items={navItems} 
+        activeSection={activeSection}
+        fastTransition={fastTransition}
+        quickSpring={quickSpring}
+      />
+    </>
+  )
+}
+
+// Desktop Navbar - Clean horizontal bar at bottom of screen
+const NavbarDesktop = ({
+  items,
+  activeSection,
+  fastTransition,
+  quickSpring
+}: {
+  items: { title: string; icon: React.ReactNode; href: string }[];
+  activeSection: string;
+  fastTransition: TransitionConfig;
+  quickSpring: TransitionConfig;
+}) => {
+  return (
+    <motion.div 
+      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:block"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={fastTransition}
+    >
+      <nav className="flex items-center justify-center gap-5 p-3 rounded-xl bg-card/95 backdrop-blur-sm border border-border shadow-md">
+        <LayoutGroup id="desktop-nav">
+          {items.map((item) => (
+            <NavItemDesktop
+              key={item.title}
+              item={item}
+              isActive={activeSection === item.href.replace('#', '')}
+              fastTransition={fastTransition}
+              quickSpring={quickSpring}
+            />
+          ))}
+        </LayoutGroup>
+      </nav>
+    </motion.div>
+  );
+};
+
+// Desktop Navigation Item
+const NavItemDesktop = ({ 
+  item, 
+  isActive,
+  fastTransition,
+  quickSpring
+}: { 
+  item: { title: string; icon: React.ReactNode; href: string };
+  isActive: boolean;
+  fastTransition: TransitionConfig;
+  quickSpring: TransitionConfig;
+}) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const target = document.querySelector(item.href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  return (
+    <Link href={item.href} onClick={handleNavClick} className="group flex flex-col items-center gap-2">
+      <div className="relative w-12 h-12">
+        {/* Background animation - simple and quick */}
+        {isActive && (
+          <motion.div
+            layoutId="activeBackgroundDesktop"
+            className="absolute inset-0 bg-primary rounded-xl shadow-md"
+            transition={quickSpring}
+          />
+        )}
+        
+        <motion.div 
+          className={cn(
+            "w-12 h-12 rounded-xl flex items-center justify-center relative z-10",
+            isActive
+              ? "text-primary-foreground" 
+              : "bg-secondary/10 text-foreground/80 hover:bg-secondary/20"
+          )}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={fastTransition}
+        >
+          <div className="w-5 h-5">
+            {item.icon}
+          </div>
+        </motion.div>
+      </div>
+      
+      <span className={cn(
+        "text-xs font-medium transition-colors duration-200", 
+        isActive ? "text-primary" : "text-foreground/70"
+      )}>
+        {item.title}
+      </span>
+    </Link>
+  );
+};
+
+// Mobile Navbar - Fixed at bottom
+const NavbarMobile = ({
+  items,
+  activeSection,
+  fastTransition,
+  quickSpring
+}: {
+  items: { title: string; icon: React.ReactNode; href: string }[];
+  activeSection: string;
+  fastTransition: TransitionConfig;
+  quickSpring: TransitionConfig;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close the mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#mobile-navbar') && !target.closest('#mobile-navbar-toggle')) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+      {/* Main bottom nav */}
+      <motion.nav 
+        className="flex items-center justify-between px-8 py-4 bg-background border-t border-border shadow-sm"
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={fastTransition}
+      >
+        <LayoutGroup id="mobile-nav-main">
+          {items.slice(0, 4).map((item) => (
+            <NavItemMobile
+              key={item.title}
+              item={item}
+              isActive={activeSection === item.href.replace('#', '')}
+              onClick={() => setIsOpen(false)}
+              fastTransition={fastTransition}
+              quickSpring={quickSpring}
+            />
+          ))}
+        
+          {/* Menu toggle button */}
+          <button
+            id="mobile-navbar-toggle"
+            className="flex flex-col items-center justify-center gap-1.5 text-foreground/70 relative"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+          >
+            <motion.div 
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-secondary/20 mb-0.5"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ rotate: isOpen ? 90 : 0 }}
+              transition={fastTransition}
+            >
+              <Menu className="w-5 h-5" />
+            </motion.div>
+            <span className="text-xs font-medium">More</span>
+            {/* Indicator dot for active sections in hidden menu */}
+            {(activeSection === 'timeline' || activeSection === 'contact') && (
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full" />
+            )}
+          </button>
+        </LayoutGroup>
+      </motion.nav>
+
+      {/* Expandable menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={menuVariants}
-            className="fixed inset-0 bg-background/95 backdrop-blur-2xl z-50 flex flex-col items-center justify-center"
+            id="mobile-navbar"
+            className="flex justify-evenly gap-5 p-5 bg-background border-t border-border"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={fastTransition}
           >
-            <div className="flex flex-col items-center gap-6">
-              {navLinks.map((link) => (
-                <motion.div
-                  key={link.href}
-                  variants={menuItemVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="relative"
-                >
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className={cn(
-                      "text-2xl font-medium transition-all duration-300 flex items-center gap-3",
-                      activeSection === link.href.replace("#", "")
-                        ? "text-primary"
-                        : "text-foreground/70 hover:text-foreground"
-                    )}
-                  >
-                    {link.icon}
-                    {link.label}
-                  </a>
-                </motion.div>
+            <LayoutGroup id="mobile-nav-expanded">
+              {items.slice(4).map((item) => (
+                <NavItemMobile
+                  key={item.title}
+                  item={item}
+                  isActive={activeSection === item.href.replace('#', '')}
+                  onClick={() => setIsOpen(false)}
+                  fastTransition={fastTransition}
+                  quickSpring={quickSpring}
+                />
               ))}
-              <motion.div variants={menuItemVariants} className="mt-4">
-                <Button 
-                  size="lg" 
-                  variant="gradient"
-                  className="px-6 py-6 font-medium rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-                  onClick={() => {
-                    window.open('https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing', '_blank')
-                  }}
-                >
-                  Resume
-                  <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </motion.div>
-            </div>
+            </LayoutGroup>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
-  )
-}
+    </div>
+  );
+};
+
+// Mobile Navigation Item
+const NavItemMobile = ({ 
+  item, 
+  isActive,
+  onClick,
+  fastTransition,
+  quickSpring
+}: { 
+  item: { title: string; icon: React.ReactNode; href: string };
+  isActive: boolean;
+  onClick: () => void;
+  fastTransition: TransitionConfig;
+  quickSpring: TransitionConfig;
+}) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    onClick();
+    const target = document.querySelector(item.href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  return (
+    <Link href={item.href} onClick={handleNavClick} className="flex flex-col items-center gap-1.5">
+      <div className="relative w-10 h-10">
+        {/* Background animation */}
+        {isActive && (
+          <motion.div
+            layoutId={`activeBackground${item.title}`}
+            className="absolute inset-0 bg-primary rounded-xl shadow-md"
+            transition={quickSpring}
+          />
+        )}
+        
+        <motion.div 
+          className={cn(
+            "w-10 h-10 rounded-xl flex items-center justify-center relative z-10",
+            isActive
+              ? "text-primary-foreground" 
+              : "bg-secondary/10 text-foreground/80 hover:bg-secondary/20"
+          )}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={fastTransition}
+        >
+          <div className="w-5 h-5">
+            {item.icon}
+          </div>
+        </motion.div>
+      </div>
+      
+      <span className={cn(
+        "text-xs font-medium transition-colors duration-200", 
+        isActive ? "text-primary" : "text-foreground/70"
+      )}>
+        {item.title}
+      </span>
+    </Link>
+  );
+};
 
