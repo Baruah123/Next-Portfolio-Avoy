@@ -41,10 +41,10 @@ const projects: Project[] = [
     title: "AI Content Generator",
     description:
       "A content generation tool powered by AI, allowing users to create blog posts, social media content, and more with a few clicks.",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/Ai.png",
     tags: ["Next.js", "OpenAI", "Tailwind CSS", "TypeScript"],
-    demoUrl: "#",
-    githubUrl: "#",
+    demoUrl: "https://ai-content-generator-seven-delta.vercel.app/",
+    githubUrl: "https://github.com/Baruah123/Next-Portfolio-Avoy",
   },
   {
     id: 4,

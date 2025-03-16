@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Moon, Sun, Code2, Briefcase, User2, Clock, Phone, Home, Menu } from "lucide-react"
 import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 
@@ -110,16 +109,14 @@ export default function Header() {
                   </motion.button>
                 </AnimatePresence>
                 
-                <Button 
-                  size="sm"
-                  variant="default"
-                  className="hidden md:flex"
-                  onClick={() => {
-                    window.open('https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing', '_blank')
-                  }}
+                <a 
+                  href="https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden md:inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 cursor-pointer"
                 >
                   Resume
-                </Button>
+                </a>
               </div>
             )}
           </div>

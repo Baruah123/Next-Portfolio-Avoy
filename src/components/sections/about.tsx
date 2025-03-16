@@ -3,7 +3,6 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { FileText, User, Mail, Calendar, MapPin } from "lucide-react"
 
 export default function About() {
@@ -11,8 +10,20 @@ export default function About() {
   const isInView = useInView(ref, { once: true, amount: 0.3 })
 
   const handleDownloadCV = () => {
-    // Open the Google Drive link in a new tab
-    window.open('https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing', '_blank')
+    try {
+      // Direct approach to open in a new tab/window
+      window.open('https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing', '_blank', 'noopener=yes,noreferrer=yes');
+      
+      // Fallback if window.open fails
+      setTimeout(() => {
+        const cvLink = 'https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing';
+        window.location.href = cvLink;
+      }, 300);
+    } catch (error) {
+      console.error('Error opening CV:', error);
+      // Final fallback
+      window.location.href = 'https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing';
+    }
   }
 
   const containerVariants = {
@@ -145,16 +156,20 @@ export default function About() {
               </div>
 
               {/* CTA Button */}
-              <div className="pt-4">
-                <Button 
-                  variant="gradient" 
-                  size="lg" 
-                  onClick={handleDownloadCV}
-                  className="w-full sm:w-auto gap-2 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg hover:scale-105 transition-all duration-300 hover:shadow-lg"
+              <div className="pt-4 relative z-10">
+                <a
+                  href="https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-gradient-to-r from-primary to-blue-500 text-primary-foreground hover:opacity-90 h-11 rounded-md px-8 w-full sm:w-auto gap-2 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg hover:scale-105 transition-all duration-300 hover:shadow-lg relative z-10 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDownloadCV();
+                  }}
                 >
                   <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                   Download CV
-                </Button>
+                </a>
               </div>
             </motion.div>
           </div>

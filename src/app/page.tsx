@@ -42,6 +42,25 @@ export default function Home() {
               showGradient={false}
               badge={
                 <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md px-5 py-3 rounded-lg shadow-xl">
+                  <div className="flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
+                    <svg 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-white"
+                    >
+                      <path 
+                        d="M12 2L17 7H14V13H10V7H7L12 2Z" 
+                        fill="currentColor" 
+                      />
+                      <path 
+                        d="M19 9H15V15H9V9H5V20C5 20.6 5.4 21 6 21H18C18.6 21 19 20.6 19 20V9Z" 
+                        fill="currentColor" 
+                      />
+                    </svg>
+                  </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-white">UI/UX Design</span>
                     <span className="text-xs text-white/70">Next.js • Tailwind CSS</span>

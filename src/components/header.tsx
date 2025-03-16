@@ -214,7 +214,7 @@ export default function Header() {
 
           {/* Resume button */}
           <motion.a
-            href="#"
+            href="https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
@@ -314,12 +314,16 @@ export default function Header() {
               {/* Resume button in mobile menu */}
               <motion.a
                 variants={menuItemVariants}
-                href="#"
+                href="https://drive.google.com/file/d/1n3kPVtvYiv2Idnpc6BK1Zd9vx3dIFE3f/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 className="mt-4 px-6 py-3 rounded-full bg-primary/90 hover:bg-primary text-primary-foreground transition-colors text-xl font-medium flex items-center gap-2"
+                onClick={() => {
+                  // Close the mobile menu after clicking
+                  setIsOpen(false);
+                }}
               >
                 Resume <ChevronDown className="w-5 h-5 ml-1" />
               </motion.a>

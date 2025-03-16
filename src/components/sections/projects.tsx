@@ -3,86 +3,10 @@
 import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 import { ExternalLink, Github, ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-type Project = {
-  id: number
-  title: string
-  description: string
-  image: string
-  tags: string[]
-  demoUrl: string
-  githubUrl: string
-  featured: boolean
-}
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Examination Platform",
-    description:
-      " A secure, responsive platform for online exams with real-time feedback, timers, and result tracking.",
-    image: "/NewExam.jpg",
-    tags: ["React", "Cloudinary ", "Express", "MongoDB","Node.js"],
-    demoUrl: "https://exam-master-pearl.vercel.app/",
-    githubUrl: "https://github.com/Baruah123/Exam-Master",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "E-Commerce Platform",
-    description: "A modern e-commerce platform with product filtering, cart functionality, and checkout process.",
-    image: "/ecommerce.jpg",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Stripe"],
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "AI Content Generator",
-    description:
-      "A content generation tool powered by AI, allowing users to create blog posts, social media content, and more.",
-    image: "/placeholder.svg?height=600&width=800",
-    tags: ["Next.js", "OpenAI", "Tailwind CSS", "TypeScript"],
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Dashboard UI Kit",
-    description: "A comprehensive dashboard UI kit with over 50 components, dark mode support, and responsive design.",
-    image: "/placeholder.svg?height=600&width=800",
-    tags: ["React", "Tailwind CSS", "Storybook", "Figma"],
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Music Streaming App",
-    description:
-      "A Spotify-like music streaming application with playlist creation, user authentication, and audio visualization.",
-    image: "/placeholder.svg?height=600&width=800",
-    tags: ["React", "Node.js", "Express", "MongoDB"],
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Travel Blog Platform",
-    description:
-      "A platform for travel enthusiasts to share their experiences, with location tagging and interactive maps.",
-    image: "/placeholder.svg?height=600&width=800",
-    tags: ["Next.js", "GraphQL", "Mapbox", "Tailwind CSS"],
-    demoUrl: "#",
-    githubUrl: "#",
-    featured: false,
-  },
-]
+import { projects } from "@/lib/projects-data"
 
 export default function Projects() {
   const ref = useRef(null)
@@ -205,7 +129,7 @@ export default function Projects() {
                     <p className="text-muted-foreground/90 text-base mb-4 line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
                       {project.description}
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-4">
                       {project.tags.map((tag, index) => (
                         <span 
                           key={index} 
@@ -215,6 +139,14 @@ export default function Projects() {
                         </span>
                       ))}
                     </div>
+                    
+                    <Link 
+                      href={`/projects/${project.id}`} 
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 group/link"
+                    >
+                      View Details
+                      <ArrowRight size={14} className="transition-transform duration-300 group-hover/link:translate-x-1" />
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -273,16 +205,13 @@ export default function Projects() {
                   )}
                 </div>
                 <div className="flex justify-between items-center">
-                  <motion.a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/projects/${project.id}`}
                     className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 group/link"
-                    whileHover={{ x: 5 }}
                   >
                     View Project 
                     <ArrowRight size={14} className="transition-transform duration-300 group-hover/link:translate-x-1" />
-                  </motion.a>
+                  </Link>
                   <motion.a
                     href={project.githubUrl}
                     target="_blank"
@@ -306,14 +235,16 @@ export default function Projects() {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="gap-2 bg-secondary/30 backdrop-blur-sm border-border/30 shadow-[inset_0_0_1px_1px] shadow-primary/5 hover:bg-secondary/50 hover:border-primary/30 transition-all duration-300 px-8"
-          >
-            View All Projects 
-            <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </Button>
+          <Link href="/projects">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="gap-2 bg-secondary/30 backdrop-blur-sm border-border/30 shadow-[inset_0_0_1px_1px] shadow-primary/5 hover:bg-secondary/50 hover:border-primary/30 transition-all duration-300 px-8"
+            >
+              View All Projects 
+              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>
