@@ -7,6 +7,18 @@ import { Menu, X, Moon, Sun, Sparkles, ChevronDown } from "lucide-react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
+// Move the throttle function outside the component
+const throttle = <T extends (...args: unknown[]) => void>(callback: T, delay: number) => {
+  let lastCall = 0
+  return function (...args: Parameters<T>) {
+    const now = new Date().getTime()
+    if (now - lastCall >= delay) {
+      lastCall = now
+      callback(...args)
+    }
+  }
+}
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -18,19 +30,8 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLElement>(null)
 
-  // Throttle scroll events for better performance
-  const throttle = <T extends (...args: unknown[]) => void>(callback: T, delay: number) => {
-    let lastCall = 0
-    return function (...args: Parameters<T>) {
-      const now = new Date().getTime()
-      if (now - lastCall >= delay) {
-        lastCall = now
-        callback(...args)
-      }
-    }
-  }
-
-  const updateActiveSection = useCallback(() => {
+  // Replace the useCallback with an inline function implementation
+  const updateActiveSection = () => {
     const sections = document.querySelectorAll("section[id]")
     const scrollPosition = window.scrollY + 100 // Offset for header height
     
@@ -47,26 +48,28 @@ export default function Header() {
     })
     
     setActiveSection(currentActive)
-  }, [])
+  }
 
-  const handleScroll = useCallback(throttle(() => {
-    const currentScrollY = window.scrollY
-    
-    // Determine if scrolled past threshold
-    setScrolled(currentScrollY > 50)
-    
-    // Hide header when scrolling down, show when scrolling up
-    if (currentScrollY > lastScrollY.current && currentScrollY > 150 && !isOpen) {
-      setHidden(true)
-    } else {
-      setHidden(false)
-    }
-    
-    // Update active section
-    updateActiveSection()
-    
-    lastScrollY.current = currentScrollY
-  }, 100), [isOpen, updateActiveSection])
+  const handleScroll = useCallback(() => {
+    throttle(() => {
+      const currentScrollY = window.scrollY
+      
+      // Determine if scrolled past threshold
+      setScrolled(currentScrollY > 50)
+      
+      // Hide header when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY.current && currentScrollY > 150 && !isOpen) {
+        setHidden(true)
+      } else {
+        setHidden(false)
+      }
+      
+      // Update active section
+      updateActiveSection()
+      
+      lastScrollY.current = currentScrollY
+    }, 100)()
+  }, [isOpen])
 
   useEffect(() => {
     setMounted(true)

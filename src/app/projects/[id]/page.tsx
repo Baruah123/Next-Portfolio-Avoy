@@ -11,9 +11,21 @@ import { Button } from "@/components/ui/button"
 // Import project data from the projects component
 import { projects } from "@/lib/projects-data"
 
+// Define a type for the project to fix the 'any' warning
+type Project = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  demoUrl: string;
+  githubUrl: string;
+  tags: string[];
+  featured?: boolean;
+}
+
 export default function ProjectDetail() {
   const params = useParams()
-  const [project, setProject] = useState<any>(null)
+  const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -22,7 +34,7 @@ export default function ProjectDetail() {
     const foundProject = projects.find((p) => p.id === projectId)
     
     if (foundProject) {
-      setProject(foundProject)
+      setProject(foundProject as Project)
     }
     
     setLoading(false)
@@ -40,7 +52,7 @@ export default function ProjectDetail() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold mb-4">Project Not Found</h1>
-        <p className="text-muted-foreground mb-8">The project you're looking for doesn't exist.</p>
+        <p className="text-muted-foreground mb-8">The project you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/#projects">
           <Button variant="default">Back to Projects</Button>
         </Link>
